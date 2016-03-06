@@ -1,7 +1,7 @@
-package controllers
+package backend.controllers
 
 import javax.inject._
-import play.api._
+
 import play.api.mvc._
 
 /**
@@ -18,7 +18,7 @@ class HomeController @Inject() extends Controller {
    * a path of `/`.
    */
   def index = Action {
-    Ok(views.html.index("Your new application is ready."))
+    Ok(backend.views.html.index("Your new application is ready."))
   }
 
 }

@@ -1,4 +1,4 @@
-package filters
+package backend.filters
 
 import akka.stream.Materializer
 import javax.inject._

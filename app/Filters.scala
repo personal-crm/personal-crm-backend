@@ -3,7 +3,7 @@ import play.api._
 import play.api.http.HttpFilters
 import play.api.mvc._
 
-import filters.ExampleFilter
+import backend.filters.ExampleFilter
 
 /**
  * This class configures filters that run on every request. This
