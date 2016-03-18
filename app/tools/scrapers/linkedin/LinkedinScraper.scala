@@ -11,10 +11,10 @@ class LinkedinScraper @Inject()(ws: WSClient) extends Controller {
   val baseUrl = "https://www.linkedin.com"
 
   def search(firstName: String, lastName: String) = Action.async {
-    ScraperUtils.fetch(ws, s"$baseUrl/pub/dir/?first=$firstName&last=$lastName")(SearchPage.parse)
+    ScraperUtils.scrapeHtml(ws, s"$baseUrl/pub/dir/?first=$firstName&last=$lastName")(SearchPage.parse)
   }
 
   def profile(url: String) = Action.async {
-    ScraperUtils.fetch(ws, url)(ProfilePage.parse)
+    ScraperUtils.scrapeHtml(ws, url)(ProfilePage.parse)
   }
 }

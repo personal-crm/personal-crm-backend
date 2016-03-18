@@ -11,6 +11,7 @@ GET        /message                                 backend.controllers.AsyncCon
 
 GET        /api/v1/scrapers/linkedin/search         tools.scrapers.linkedin.LinkedinScraper.search(firstName: String, lastName: String)
 GET        /api/v1/scrapers/linkedin/profile        tools.scrapers.linkedin.LinkedinScraper.profile(url: String)
+GET        /api/v1/scrapers/webpage/meta            tools.scrapers.webpage.WebpageScraper.meta(url: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file                            controllers.Assets.versioned(path="/public", file: Asset)
