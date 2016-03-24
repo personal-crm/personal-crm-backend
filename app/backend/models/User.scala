@@ -1,8 +1,11 @@
 package backend.models
 
-import backend.models.User.UserId
 import common.models.Email
 import play.api.libs.json._
+
+
+trait UserIdType
+case class UserId(override val value: String) extends Id[UserIdType](value)
 
 case class User(
   id: UserId,
@@ -10,11 +13,9 @@ case class User(
   lastName: String,
   email: Email)
 object User {
-  trait UserIdType
-  type UserId = Id[UserIdType]
-  val  UserId = Id.apply[UserIdType] _
 
-  //implicit val format = Json.format[User] // UserId => No apply function found matching unapply parameters :(
+  implicit val userIdFormat = Json.format[UserId]
+  implicit val format = Json.format[User] // UserId => No apply function found matching unapply parameters :(
   implicit def jsonReads: Reads[User] = new Reads[User] {
     def reads(json: JsValue): JsResult[User] = JsSuccess(User(
       (json \ "id").as[UserId],

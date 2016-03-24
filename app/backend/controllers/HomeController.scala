@@ -3,9 +3,9 @@ package backend.controllers
 import javax.inject._
 
 import backend.models._
-import backend.models.Entity.EntityId
-import backend.models.Story.StoryId
-import backend.models.User.UserId
+import backend.models.EntityId
+import backend.models.StoryId
+import backend.models.UserId
 import common.models._
 import org.joda.time.DateTime
 import play.api.libs.json.Json

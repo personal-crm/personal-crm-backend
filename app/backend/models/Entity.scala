@@ -1,9 +1,11 @@
 package backend.models
 
-import backend.models.Entity.EntityId
-import common.models.{Text, TextMultiline, Tag}
+import common.models.{Tag, Text, TextMultiline}
 import org.joda.time.DateTime
 import play.api.libs.json._
+
+trait EntityIdType
+case  class EntityId(override val value: String ) extends Id[EntityIdType](value)
 
 case class Entity(
   id: EntityId,
@@ -15,33 +17,9 @@ case class Entity(
   created: DateTime,
   updated: DateTime)
 object Entity {
-  trait EntityIdType
-  type EntityId = Id[EntityIdType]
-  val  EntityId = Id.apply[EntityIdType] _
 
-  //implicit val format = Json.format[Entity] // EntityId => No apply function found matching unapply parameters :(
-  implicit def jsonReads: Reads[Entity] = new Reads[Entity] {
-    def reads(json: JsValue): JsResult[Entity] = JsSuccess(Entity(
-      (json \ "id").as[EntityId],
-      (json \ "category").as[EntityCategory],
-      (json \ "name").as[Text],
-      (json \ "description").as[TextMultiline],
-      (json \ "tags").as[Seq[Tag]],
-      (json \ "archived").as[Boolean],
-      (json \ "created").as[DateTime],
-      (json \ "updated").as[DateTime]))
-  }
-  implicit def jsonWrites: Writes[Entity] = new Writes[Entity] {
-    def writes(entity: Entity): JsValue = Json.obj(
-      "id" -> entity.id,
-      "category" -> entity.category,
-      "name" -> entity.name,
-      "description" -> entity.description,
-      "tags" -> entity.tags,
-      "archived" -> entity.archived,
-      "created" -> entity.created,
-      "updated" -> entity.updated)
-  }
+  implicit val entityIdFormat = Json.format[EntityId]
+  implicit val entityFormat = Json.format[Entity]
 }
 
 sealed trait EntityCategory
