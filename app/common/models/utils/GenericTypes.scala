@@ -14,11 +14,9 @@ trait TPrimitiveHelper[U, T <: TPrimitive[U]] {
   def fromJson(json: JsValue): Option[U]
   def toJson(t: T): JsValue
 
-  implicit def jsonReads: Reads[T] = new Reads[T] {
-    def reads(json: JsValue): JsResult[T] = fromJson(json).map(v => JsSuccess(build(v))).getOrElse(JsError(s"$className expected (actual: $json)"))
-  }
-  implicit def jsonWrites: Writes[T] = new Writes[T] {
-    def writes(t: T): JsValue = toJson(t)
+  implicit def format: Format[T] = new Format[T] {
+    override def reads(json: JsValue): JsResult[T] = fromJson(json).map(v => JsSuccess(build(v))).getOrElse(JsError(s"$className expected (actual: $json)"))
+    override def writes(o: T): JsValue = toJson(o)
   }
 }
 

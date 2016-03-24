@@ -1,22 +1,19 @@
 package backend.models
 
+import common.models.utils.TStringHelper
 import common.models.{Tag, Text, TextMultiline}
 import org.joda.time.DateTime
 import play.api.libs.json._
 
+trait StoryIdType
+case class StoryId(override val value : String) extends Id[StoryIdType](value)
+object StoryId extends TStringHelper[StoryId] {
+  def build(value: String) = StoryId(value)
+}
 case class StoryEntity(
   id: EntityId,
   category: EntityCategory,
   label: Text)
-object StoryEntity {
-  import Entity.entityIdFormat
-  implicit val  storyEntityFormat = Json.format[StoryEntity]
-}
-
-
-trait StoryIdType
-
-case class StoryId(override val value : String) extends Id[StoryIdType](value)
 case class Story(
   id: StoryId,
   title: Text,
@@ -28,7 +25,8 @@ case class Story(
   created: DateTime,
   updated: DateTime)
 object Story {
-
-  implicit val storyIdFormat = Json.format[StoryId]
-  implicit val storyFormat = Json.format[Story]
+  import StoryId.format
+  import EntityId.{format => entityIdFormat}
+  implicit val formatStoryEntity = Json.format[StoryEntity]
+  implicit val formatStory = Json.format[Story]
 }
