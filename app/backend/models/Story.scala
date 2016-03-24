@@ -1,8 +1,6 @@
 package backend.models
 
-import backend.models.Entity.EntityId
-import backend.models.Story.StoryId
-import common.models.{TextMultiline, Text, Tag}
+import common.models.{Tag, Text, TextMultiline}
 import org.joda.time.DateTime
 import play.api.libs.json._
 
@@ -11,20 +9,14 @@ case class StoryEntity(
   category: EntityCategory,
   label: Text)
 object StoryEntity {
-  //implicit val format = Json.format[StoryEntity] // EntityId => No apply function found matching unapply parameters :(
-  implicit def jsonReads: Reads[StoryEntity] = new Reads[StoryEntity] {
-    def reads(json: JsValue): JsResult[StoryEntity] = JsSuccess(StoryEntity(
-      (json \ "id").as[EntityId],
-      (json \ "category").as[EntityCategory],
-      (json \ "label").as[Text]))
-  }
-  implicit def jsonWrites: Writes[StoryEntity] = new Writes[StoryEntity] {
-    def writes(storyEntity: StoryEntity): JsValue = Json.obj(
-      "id" -> storyEntity.id,
-      "category" -> storyEntity.category,
-      "label" -> storyEntity.label)
-  }
+  import Entity.entityIdFormat
+  implicit val  storyEntityFormat = Json.format[StoryEntity]
 }
+
+
+trait StoryIdType
+
+case class StoryId(override val value : String) extends Id[StoryIdType](value)
 case class Story(
   id: StoryId,
   title: Text,
@@ -36,33 +28,7 @@ case class Story(
   created: DateTime,
   updated: DateTime)
 object Story {
-  trait StoryIdType
-  type StoryId = Id[StoryIdType]
-  val  StoryId = Id.apply[StoryIdType] _
 
-  //implicit val format = Json.format[Story] // EntityId => No apply function found matching unapply parameters :(
-  implicit def jsonReads: Reads[Story] = new Reads[Story] {
-    def reads(json: JsValue): JsResult[Story] = JsSuccess(Story(
-      (json \ "id").as[StoryId],
-      (json \ "title").as[Text],
-      (json \ "text").as[TextMultiline],
-      (json \ "date").as[DateTime],
-      (json \ "tags").as[Seq[Tag]],
-      (json \ "entities").as[Seq[StoryEntity]],
-      (json \ "archived").as[Boolean],
-      (json \ "created").as[DateTime],
-      (json \ "updated").as[DateTime]))
-  }
-  implicit def jsonWrites: Writes[Story] = new Writes[Story] {
-    def writes(story: Story): JsValue = Json.obj(
-      "id" -> story.id,
-      "title" -> story.title,
-      "text" -> story.text,
-      "date" -> story.date,
-      "tags" -> story.tags,
-      "entities" -> story.entities,
-      "archived" -> story.archived,
-      "created" -> story.created,
-      "updated" -> story.updated)
-  }
+  implicit val storyIdFormat = Json.format[StoryId]
+  implicit val storyFormat = Json.format[Story]
 }
